@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WattWise | Energy Monitor</title>
+  <style>
+   
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #050d1b;
+  --panel: #0c1b30;
+  --panel2: #10243c;
+  --border: #1d3857;
+  --text: #edf7ff;
+  --muted: #9bb1cb;
+  --green: #00e6a0;
+  --green-dark: #008f70;
+  --blue: #3987ff;
+  --purple: #b46cff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 15% 0%, #103b39 0%, transparent 32%),
+    radial-gradient(ellipse at 100% 15%, #14254e 0%, transparent 30%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+}
+
+header {
+  background: rgba(5, 15, 29, 0.94);
+  color: var(--text);
+  padding: 22px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 35px #0004;
+}
+
+header h1 {
+  margin: 0;
+  font-size: clamp(25px, 3vw, 34px);
+  letter-spacing: -1px;
+}
+
+header h1::first-letter {
+  color: var(--green);
+}
+
+header p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tag {
+  background: #073b37;
+  color: #75ffcf;
+  border: 1px solid #087e69;
+  padding: 9px 15px;
+  border-radius: 30px;
+  font-size: 12px;
+}
+
+main {
+  max-width: 1250px;
+  margin: 30px auto;
+  padding: 0 22px;
+}
+
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+h2 {
+  margin: 0 0 7px;
+  font-size: clamp(23px, 3vw, 32px);
+  letter-spacing: -0.7px;
+}
+
+h3 {
+  color: #f3f8ff;
+  letter-spacing: -0.2px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  position: relative;
+  min-width: 0;
+  background: linear-gradient(145deg, #10243b, #09172a);
+  padding: 23px;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  box-shadow: 0 12px 35px #0003, inset 0 1px #ffffff08;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: #287d77;
+  box-shadow: 0 15px 35px #0004, 0 0 18px #00e6a014;
+}
+
+.metric {
+  font-size: clamp(25px, 3vw, 34px);
+  font-weight: 800;
+  margin: 14px 0 8px;
+  letter-spacing: -1px;
+  overflow-wrap: anywhere;
+}
+
+.green {
+  color: var(--green);
+}
+
+.section {
+  margin-top: 22px;
+}
+
+.section h3 {
+  margin-top: 0;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 18px;
+}
+
+label {
+  display: block;
+  color: #c7d9ef;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 13px 0 7px;
+}
+
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #254768;
+  border-radius: 10px;
+  font: inherit;
+  color: var(--text);
+  background: #0a1b30;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px #00e6a020;
+}
+
+input::placeholder {
+  color: #7890ad;
+}
+
+button {
+  border: 1px solid #00d99a;
+  border-radius: 10px;
+  padding: 12px 18px;
+  background: linear-gradient(100deg, #00a979, #00d99a);
+  color: #031a19;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 14px;
+  box-shadow: 0 5px 18px #00e6a020;
+  transition: transform 0.2s, filter 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  filter: brightness(1.12);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 22px #00e6a040;
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+
+.secondary {
+  background: #102a42;
+  color: #79f7d1;
+  border-color: #28536b;
+  box-shadow: none;
+}
+
+.bars {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  height: 190px;
+  padding: 16px 5px 0;
+  border-bottom: 1px solid #29445f;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 36px,
+    #8eb3d00d 37px,
+    transparent 38px
+  );
+}
+
+.bar-wrap {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bar {
+  background: linear-gradient(180deg, #00e6a0, #078e82);
+  border: 1px solid #5bffcf40;
+  border-radius: 7px 7px 2px 2px;
+  min-height: 4px;
+  width: 100%;
+  box-shadow: 0 0 16px #00e6a01a;
+  transition: height 0.3s ease;
+}
+
+.bar.current {
+  background: linear-gradient(180deg, #a16cff, #436bff);
+  border-color: #bca3ff80;
+  box-shadow: 0 0 22px #7e69ff35;
+}
+
+.bar-value {
+  font-size: 12px;
+  color: #effffb;
+  margin-bottom: 5px;
+  font-weight: 800;
+}
+
+.insight {
+  background: linear-gradient(120deg, #063a35, #10283a);
+  border: 1px solid #116f62;
+  color: #d9fff4;
+  border-radius: 13px;
+  padding: 17px;
+  line-height: 1.7;
+}
+
+.message {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #09182a;
+}
+
+th,
+td {
+  padding: 13px 11px;
+  text-align: left;
+  border-bottom: 1px solid #1b3048;
+}
+
+th {
+  color: #81a5c8;
+  background: #10243a;
+  font-weight: 700;
+}
+
+tbody tr {
+  transition: background 0.2s;
+}
+
+tbody tr:hover {
+  background: #153049;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+footer {
+  text-align: center;
+  padding: 26px 18px;
+  color: #8ca5bf;
+  font-size: 12px;
+  border-top: 1px solid #1c3048;
+  margin-top: 30px;
+}
+
+::selection {
+  background: #00e6a050;
+  color: white;
+}
+
+@media (min-width: 1000px) {
+  main {
+    padding: 0 28px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  main {
+    padding: 0 15px;
+    margin-top: 22px;
+  }
+
+  header {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  .bars {
+    gap: 8px;
+    height: 160px;
+  }
+
+  .metric {
+    font-size: 28px;
+  }
+
+  th,
+  td {
+    padding: 10px 8px;
+  }
+}
+
+  th,
+  td {
+    padding: 10px 8px;
+  }
+</style>
+
+</head>
+<body>
+<header>
+  <div>
+    <h1>⚡ WattWise</h1>
+    <p>Understand your energy. Make smarter choices.</p>
+  </div>
+  <span class="tag">● ENERGY DASHBOARD</span>
+</header>
+
+<main>
+  <div class="intro">
+    <div>
+      <h2>Your electricity overview</h2>
+      <div class="muted">Track readings, compare usage and estimate costs.</div>
+    </div>
+    <span class="tag" style="background:#e0f2e7;color:#17633e">Demo data · editable</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="muted">Latest recorded usage</div>
+      <div class="metric" id="total">120 kWh</div>
+      <div class="muted">Selected period</div>
+    </div>
+    <div class="card">
+      <div class="muted">Estimated electricity cost</div>
+      <div class="metric" id="cost">₹840</div>
+      <div class="muted">At your selected rate</div>
+    </div>
+    <div class="card">
+      <div class="muted">Change vs previous period</div>
+      <div class="metric" id="change">+14.3%</div>
+      <div class="muted" id="changeNote">Compared with previous usage</div>
+    </div>
+  </div>
+
+  <div class="columns section">
+    <div class="card">
+      <h3>Consumption trend</h3>
+      <div class="muted">Sample monthly usage · kWh</div>
+      <div class="bars" id="chart"></div>
+      <p class="muted">Demo values are illustrative, not meter readings.</p>
+    </div>
+    <div class="card">
+      <h3>Record a reading</h3>
+      <div class="muted">Enter usage for a period in kWh.</div>
+      <form id="readingForm">
+        <label for="period">Period</label>
+        <select id="period">
+          <option>January</option><option>February</option>
+          <option>March</option><option>April</option>
+          <option>May</option><option>June</option>
+          <option>July</option><option>August</option>
+          <option>September</option><option>October</option>
+          <option>November</option><option>December</option>
+        </select>
+        <label for="usage">Electricity consumed (kWh)</label>
+        <input id="usage" type="number" min="0.01" max="1000000" step="0.01" placeholder="e.g. 145" required>
+        <label for="rate">Estimated rate (₹ per kWh)</label>
+        <input id="rate" type="number" min="0" max="100000" step="0.01" value="7" required>
+        <button type="submit">＋ Save reading</button>
+        <div id="formMessage" class="message" role="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="columns section">
+    <div class="card">
+      <h3>Period comparison</h3>
+      <label for="compareA">First period</label>
+      <select id="compareA"></select>
+      <label for="compareB">Compare with</label>
+      <select id="compareB"></select>
+      <button id="compareBtn">Compare periods</button>
+      <div id="comparison" class="insight" style="margin-top:15px" aria-live="polite"></div>
+    </div>
+    <div class="card">
+      <h3>Smart energy insight</h3>
+      <div id="insight" class="insight" aria-live="polite"></div>
+      <p class="muted">Suggestions use recorded consumption only. No live meter or AI connection is claimed.</p>
+    </div>
+  </div>
+
+  
+
+  <div class="card section">
+    <h3>💰 Savings Calculator</h3>
+    <p class="muted">See how small changes can reduce your electricity cost.</p>
+
+    <label for="savingUsage">Current monthly usage (kWh)</label>
+    <input id="savingUsage" type="number" min="0" value="150">
+
+    <label for="savingRate">Electricity rate (₹ per kWh)</label>
+    <input id="savingRate" type="number" min="0" step="0.01" value="7">
+
+    <label for="savingTarget">Target usage reduction (%)</label>
+    <input id="savingTarget" type="number" min="0" max="100" value="10">
+
+    <button type="button" id="calculateSavings">Calculate savings</button>
+    <div id="savingsResult" class="insight" style="margin-top:15px" aria-live="polite">
+      Enter your values and calculate your potential savings.
+    </div>
+  </div>
+
+    <h3>Reading history</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Period</th><th>Usage</th><th>Estimated cost</th></tr></thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<footer>WattWise · Electricity insights made understandable</footer>
+
+<script>
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const readings = [
+    {period:"July", usage:105, rate:7},
+    {period:"August", usage:98, rate:7},
+    {period:"September", usage:120, rate:7}
+  ];
+
+  const $ = id => document.getElementById(id);
+  const money = n => "₹" + n.toLocaleString("en-IN",{maximumFractionDigits:2});
+  const num = n => n.toLocaleString("en-IN",{maximumFractionDigits:2});
+
+  function render() {
+    const latest = readings[readings.length - 1];
+    const previous = readings.length > 1 ? readings[readings.length - 2] : null;
+    $("total").textContent = num(latest.usage) + " kWh";
+    $("cost").textContent = money(latest.usage * latest.rate);
+    if (previous) {
+      const change = ((latest.usage - previous.usage) / previous.usage) * 100;
+      $("change").textContent = (change > 0 ? "+" : "") + change.toFixed(1) + "%";
+      $("change").style.color = change > 0 ? "#b45309" : "#14804a";
+      $("changeNote").textContent = change > 0 ? "Usage increased" : change < 0 ? "Usage decreased" : "No change in usage";
+      $("insight").textContent = change > 0
+        ? "Usage rose by " + change.toFixed(1) + "%. Check high-consumption appliances and compare their operating hours next period."
+        : change < 0
+        ? "Usage fell by " + Math.abs(change).toFixed(1) + "%. Review which habits helped, and try to maintain them."
+        : "Usage is unchanged. Review appliance use to find possible savings.";
+    } else {
+      $("change").textContent = "—";
+      $("changeNote").textContent = "Add another period to compare";
+      $("insight").textContent = "Record another period to get a meaningful comparison.";
+    }
+
+    const recent = readings.slice(-6);
+    const max = Math.max(...recent.map(r => r.usage), 1);
+    $("chart").innerHTML = recent.map((r,i) => `
+      <div class="bar-wrap">
+        <div class="bar-value">${num(r.usage)}</div>
+        <div class="bar ${i === recent.length - 1 ? "current" : ""}" style="height:${Math.max(4,r.usage/max*105)}px"></div>
+        <div style="margin-top:7px">${r.period.slice(0,3)}</div>
+      </div>`).join("");
+
+    $("history").innerHTML = [...readings].reverse().map(r =>
+      `<tr><td>${r.period}</td><td>${num(r.usage)} kWh</td><td>${money(r.usage*r.rate)}</td></tr>`
+    ).join("");
+
+    ["compareA","compareB"].forEach((id) => {
+      const old = $(id).value;
+      $(id).innerHTML = readings.map(r => `<option value="${r.period}">${r.period}</option>`).join("");
+      if (readings.some(r => r.period === old)) $(id).value = old;
+    });
+    if (readings.length > 1 && $("compareA").value === $("compareB").value) {
+      $("compareA").selectedIndex = Math.max(0, readings.length-2);
+      $("compareB").selectedIndex = readings.length-1;
+    }
+    compare();
+  }
+
+  function compare() {
+    const a = readings.find(r => r.period === $("compareA").value);
+    const b = readings.find(r => r.period === $("compareB").value);
+    if (!a || !b) {
+      $("comparison").textContent = "Record at least one period to compare usage.";
+      return;
+    }
+    if (a.period === b.period) {
+      $("comparison").textContent = "Choose two different periods to compare.";
+      return;
+    }
+    const diff = b.usage - a.usage;
+    const pct = a.usage ? (diff / a.usage) * 100 : 0;
+    $("comparison").textContent = `${b.period} used ${num(Math.abs(diff))} kWh ${diff > 0 ? "more" : "less"} than ${a.period} (${Math.abs(pct).toFixed(1)}% ${diff > 0 ? "increase" : "decrease"}).`;
+  }
+
+  $("readingForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const period = $("period").value;
+    const usage = Number($("usage").value);
+    const rate = Number($("rate").value);
+    if (!Number.isFinite(usage) || usage <= 0 || !Number.isFinite(rate) || rate < 0) {
+      $("formMessage").textContent = "Enter valid positive usage and a non-negative rate.";
+      return;
+    }
+    const existing = readings.find(r => r.period === period);
+    if (existing) {
+      existing.usage = usage;
+      existing.rate = rate;
+    } else {
+      readings.push({period,usage,rate});
+      readings.sort((a,b) => months.indexOf(a.period)-months.indexOf(b.period));
+    }
+    $("formMessage").textContent = period + " reading saved for this session.";
+    $("usage").value = "";
+    render();
+  });
+
+  $("compareBtn").addEventListener("click", compare);
+  $("calculateSavings").addEventListener("click", () => {
+  const usage = Number($("savingUsage").value);
+  const rate = Number($("savingRate").value);
+  const target = Number($("savingTarget").value);
+
+  if (
+    $("savingUsage").value === "" ||
+    $("savingRate").value === "" ||
+    $("savingTarget").value === "" ||
+    !Number.isFinite(usage) ||
+    !Number.isFinite(rate) ||
+    !Number.isFinite(target) ||
+    usage < 0 || rate < 0 || target < 0 || target > 100
+  ) {
+    $("savingsResult").textContent =
+      "Please enter valid values. Target reduction must be between 0% and 100%.";
+    return;
+  }
+
+  const savedUnits = usage * target / 100;
+  const savedMoney = savedUnits * rate;
+
+  $("savingsResult").textContent =
+    `You could save ${num(savedUnits)} kWh and ${money(savedMoney)} per month by reducing usage by ${target}%.`;
+});
+  $("compareA").addEventListener("change", compare);
+  $("compareB").addEventListener("change", compare);
+  render();
+</script>
+</body>
+</html>
